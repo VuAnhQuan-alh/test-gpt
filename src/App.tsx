@@ -48,7 +48,7 @@ function App() {
   // }, [provider]);
 
   useEffect(() => {
-    console.log(document.cookie.split("; "));
+    console.log(document.cookie);
     (async function () {
       const token = await getChatGPTAccessToken();
       console.log(token);
