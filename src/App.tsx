@@ -1,5 +1,6 @@
 import "./App.css";
 
+import axios from "axios";
 import ExpiryMap from "expiry-map";
 import { useEffect, useState } from "react";
 import Browser from "webextension-polyfill";
@@ -19,15 +20,15 @@ export async function getChatGPTAccessToken(): Promise<string> {
     return cache.get(KEY_ACCESS_TOKEN);
   }
 
-  const resp = await fetch("https://chat.openai.com/api/auth/session", {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
+  const resp = await axios({
+    method: "get",
+    url: "https://chat.openai.com/api/auth/session",
+    headers: {},
   });
   if (resp.status === 403) {
     throw new Error("CLOUDFLARE");
   }
-  const data = await resp.json().catch(() => ({}));
+  const data = await resp.data;
   if (!data.accessToken) {
     throw new Error("UNAUTHORIZED");
   }
@@ -47,6 +48,7 @@ function App() {
   // }, [provider]);
 
   useEffect(() => {
+    console.log(document.cookie.split("; "));
     (async function () {
       const token = await getChatGPTAccessToken();
       console.log(token);
